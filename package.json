@@ -1,0 +1,10 @@
+{
+  "name": "trumpbotmockpants",
+  "version": "1.0.0",
+  "description": "A live twitter bot",
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.15.3"
+  }
+}
