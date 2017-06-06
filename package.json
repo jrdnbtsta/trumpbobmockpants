@@ -5,6 +5,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.15.3"
+    "express": "^4.15.3",
+    "twit": "^2.2.5"
   }
 }
