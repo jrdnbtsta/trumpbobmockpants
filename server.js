@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const Twit = require('twit');
+const fs = require('fs');
 
 const T = new Twit({
 	consumer_key: 'efDOtt2mIZUczcJczyjBXG6Z2',
@@ -19,20 +20,40 @@ function randomCap(word) {
 }
 
 lastTweet = {};
+//DT ID: 25073877
+//Jordan ID: 1000761270
+setInterval(() => {
+	T.get('statuses/user_timeline', { user_id: 25073877, count: 1 }, (err, data, response) => {
+		if (err) console.log(err);
 
-T.get('statuses/user_timeline', { user_id: 25073877, count: 1 }, (err, data, response) => {
-	if (err) console.log(err);
+		if (data[0].id !== lastTweet.id) {
+			let newText = '@' + data[0].user.screen_name + ' ' + randomCap(data[0].text);
+			let b64content = fs.readFileSync('/media/trumpBot.png', { encoding: 'base64' })
 
-	if (data[0].id !== lastTweet.id) {
+			T.post('media/upload', { media_data: b64content }, function (err, data, response) {
 
-		T.post('statuses/update', { status: '' }, (err, data, response) => {
-			console.log('posted tweet');
-		})
+				let mediaIdStr = data.media_id_string
+				let altText = 'SpongeBob MockPants'
+				let meta_params = { media_id: mediaIdStr, alt_text: { text: altText } }
 
-		lastTweet = data[0];
-	}
+				T.post('media/metadata/create', meta_params, function (err, data, response) {
+					if (!err) {
 
-	// console.log('DATA: ', data);
-})
+						let params = { status: newText, in_reply_to_status_id: data[0].id, media_ids: [mediaIdStr] }
+
+						T.post('statuses/update', params, function (err, data, response) {
+							console.log('replied to Text');
+						})
+					}
+				})
+			})
+
+			lastTweet = data[0];
+		}
+
+		console.log('DATA: ', data);
+	})
+}, 1000 * 10);
+
 
 app.listen(3000, () => console.log('connected to server 3000'));
