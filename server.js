@@ -9,13 +9,17 @@ const T = new Twit({
 	access_token_secret: 'Wuilg0wUzSBxOiTorxqNpAYsdA0BuhroB6vGwwwztEtPN',
 })
 
-lastTweet = {};
-
 function randomCap(word) {
 	return word.split('').reduce((all, item, index) => {
+		if (index === 0) item = item.toLowerCase();
+		if (index % 3 === 0 || index % 5 === 0) item = item.toUpperCase();
 
-	});
+		return all += item;
+	}, '');
 }
+
+lastTweet = {};
+
 T.get('statuses/user_timeline', { user_id: 25073877, count: 1 }, (err, data, response) => {
 	if (err) console.log(err);
 
