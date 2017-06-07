@@ -22,13 +22,14 @@ function randomCap(word) {
 lastTweet = {};
 //DT ID: 25073877
 //Jordan ID: 1000761270
+
 setInterval(() => {
-	T.get('statuses/user_timeline', { user_id: 25073877, count: 1 }, (err, data, response) => {
+	T.get('statuses/user_timeline', { user_id: 25073877, count: 1 }, (err, data0, response) => {
 		if (err) console.log(err);
 
-		if (data[0].id !== lastTweet.id) {
-			let newText = '@' + data[0].user.screen_name + ' ' + randomCap(data[0].text);
-			let b64content = fs.readFileSync('/media/trumpBot.png', { encoding: 'base64' })
+		if (data0[0].id !== lastTweet.id) {
+			let newText = '@' + data0[0].user.screen_name + ' ' + randomCap(data0[0].text);
+			let b64content = fs.readFileSync('/Users/jordanb/Desktop/projects/trumpbobmockpants/media/trumpBot.png', { encoding: 'base64' })
 
 			T.post('media/upload', { media_data: b64content }, function (err, data, response) {
 
@@ -38,20 +39,17 @@ setInterval(() => {
 
 				T.post('media/metadata/create', meta_params, function (err, data, response) {
 					if (!err) {
-
-						let params = { status: newText, in_reply_to_status_id: data[0].id, media_ids: [mediaIdStr] }
+						let params = { status: newText, in_reply_to_status_id: data0[0].id_str, media_ids: [mediaIdStr] }
 
 						T.post('statuses/update', params, function (err, data, response) {
-							console.log('replied to Text');
+							console.log('replied to Text: ', data);
 						})
 					}
 				})
 			})
 
-			lastTweet = data[0];
+			lastTweet = data0[0];
 		}
-
-		console.log('DATA: ', data);
 	})
 }, 1000 * 10);
 
