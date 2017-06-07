@@ -23,6 +23,8 @@ setInterval(() => {
 
 		if (data0[0].id !== lastTweet.id) {
 			let newText = '@' + data0[0].user.screen_name + ' ' + randomCap(data0[0].text);
+			if(newText.length > 140) newText = newText.substr(0,140);
+
 			let b64content = fs.readFileSync('/Users/jordanb/Desktop/projects/trumpbobmockpants/media/trumpBot.png', { encoding: 'base64' })
 
 			T.post('media/upload', { media_data: b64content }, function (err, data, response) {
@@ -34,7 +36,8 @@ setInterval(() => {
 				T.post('media/metadata/create', meta_params, function (err, data, response) {
 					if (!err) {
 						let params = { status: newText, in_reply_to_status_id: data0[0].id_str, media_ids: [mediaIdStr] }
-
+						
+						console.log('text: ', newText, ' len: ', newText.length);
 						T.post('statuses/update', params, function (err, data, response) {
 							console.log('replied to Text: ', data);
 						})
@@ -45,6 +48,6 @@ setInterval(() => {
 			lastTweet = data0[0];
 		}
 	})
-}, 1000 * 10);
+}, 1000 * 5);
 
 app.listen(3000, () => console.log('connected to server 3000'));
