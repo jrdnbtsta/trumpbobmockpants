@@ -38,7 +38,6 @@ setInterval(() => {
 
 				T.post('media/metadata/create', meta_params, (err, data, response) => {
 					if (!err) {
-
 						let params = { status: newText, in_reply_to_status_id: data0[0].id_str, media_ids: [mediaIdStr] }
 						
 						T.post('statuses/update', params, (err, data, response) => {
